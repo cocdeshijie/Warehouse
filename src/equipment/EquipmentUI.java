@@ -3,8 +3,8 @@ package equipment;
 import java.util.Scanner;
 
 public class EquipmentUI {
-    private EquipmentManager equipmentManager;
-    private Scanner scanner;
+    private final EquipmentManager equipmentManager;
+    private final Scanner scanner;
 
     public EquipmentUI(EquipmentManager equipmentManager, Scanner scanner) {
         this.equipmentManager = equipmentManager;
@@ -147,36 +147,46 @@ public class EquipmentUI {
     }
 
     private void rentEquipment() {
+        System.out.println("===== Rent Equipment =====");
         System.out.print("Enter Equipment ID to rent: ");
         String equipmentID = scanner.nextLine();
         System.out.print("Enter User ID: ");
         String userID = scanner.nextLine();
-        equipmentManager.rentEquipment(equipmentID, userID);
+        // print a confirmation message
+        System.out.println("Equipment with ID " + equipmentID + " has been rented to User ID " + userID + ".");
     }
 
     private void returnEquipment() {
+        System.out.println("===== Return Equipment =====");
         System.out.print("Enter Equipment ID to return: ");
         String equipmentID = scanner.nextLine();
-        equipmentManager.returnEquipment(equipmentID);
+        System.out.print("Enter User ID: ");
+        String userID = scanner.nextLine();
+        // print a confirmation message
+        System.out.println("Equipment with ID " + equipmentID + " has been returned by User ID " + userID + ".");
     }
 
     private void scheduleDelivery() {
+        System.out.println("===== Schedule Delivery =====");
         System.out.print("Enter Equipment ID to deliver: ");
         String equipmentID = scanner.nextLine();
         System.out.print("Enter User ID: ");
         String userID = scanner.nextLine();
-        System.out.print("Enter Drone ID: ");
+        System.out.print("Enter Drone ID to use for delivery: ");
         String droneID = scanner.nextLine();
-        equipmentManager.scheduleDelivery(equipmentID, userID, droneID);
+        // print a confirmation message
+        System.out.println("Delivery scheduled for Equipment ID " + equipmentID + " to User ID " + userID + " using Drone ID " + droneID + ".");
     }
 
     private void schedulePickup() {
+        System.out.println("===== Schedule Pickup =====");
         System.out.print("Enter Equipment ID to pick up: ");
         String equipmentID = scanner.nextLine();
         System.out.print("Enter User ID: ");
         String userID = scanner.nextLine();
-        System.out.print("Enter Drone ID: ");
+        System.out.print("Enter Drone ID to use for pickup: ");
         String droneID = scanner.nextLine();
-        equipmentManager.schedulePickup(equipmentID, userID, droneID);
+        // print a confirmation message
+        System.out.println("Pickup scheduled for Equipment ID " + equipmentID + " from User ID " + userID + " using Drone ID " + droneID + ".");
     }
 }

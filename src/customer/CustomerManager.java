@@ -14,7 +14,10 @@ public class CustomerManager {
 
     // Add new customer
     public void addCustomer(Customer customer) {
-        String sql = "INSERT INTO Customer(user_id, fname, lname, address, phone, email, warehouse_distance, is_active, start_date, warehouse_address) VALUES(?,?,?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO Customer("
+                + "user_id, fname, lname, address, phone, email, "
+                + "warehouse_distance, is_active, start_date, warehouse_address"
+                + ") VALUES(?,?,?,?,?,?,?,?,?,?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -40,7 +43,10 @@ public class CustomerManager {
 
     // Edit existing customer
     public void editCustomer(String userID, Scanner scanner) {
-        String sql = "UPDATE Customer SET fname = ?, lname = ?, address = ?, phone = ?, email = ?, warehouse_distance = ?, is_active = ?, warehouse_address = ? WHERE user_id = ?";
+        String sql = "UPDATE Customer SET "
+                + "fname = ?, lname = ?, address = ?, phone = ?, email = ?, "
+                + "warehouse_distance = ?, is_active = ?, warehouse_address = ? "
+                + "WHERE user_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -109,6 +115,7 @@ public class CustomerManager {
     // Search customer
     public Customer searchCustomer(String userID) {
         String sql = "SELECT * FROM Customer WHERE user_id = ?";
+
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
@@ -139,7 +146,8 @@ public class CustomerManager {
                 boolean isActive = rs.getBoolean("is_active");
                 String warehouseAddress = rs.getString("warehouse_address");
 
-                Customer customer = new Customer(userId, firstName, lastName, address, phone, email, warehouseDistance, isActive, startDate, warehouseAddress);
+                Customer customer = new Customer(userId, firstName, lastName, address, phone, email,
+                        warehouseDistance, isActive, startDate, warehouseAddress);
                 return customer;
 
             } else {
@@ -155,6 +163,7 @@ public class CustomerManager {
     // List all customers
     public void listAllCustomers() {
         String sql = "SELECT * FROM Customer";
+
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {

@@ -13,7 +13,9 @@ public class ReportManager {
 
     // Report 1: Renting Checkouts
     public void getTotalRentalsByMember(String memberId) {
-        String sql = "SELECT COUNT(*) AS total_items_rented FROM Rental WHERE member_id = ?";
+        String sql = "SELECT COUNT(*) AS total_items_rented "
+                + "FROM Rental "
+                + "WHERE member_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -35,12 +37,12 @@ public class ReportManager {
 
     // Report 2: Popular Item
     public void getMostPopularItem() {
-        String sql = "SELECT E.equipment_id, E.type, E.description, COUNT(R.rental_id) AS times_rented " +
-                "FROM Rental R " +
-                "JOIN Equipment E ON R.equipment_id = E.equipment_id " +
-                "GROUP BY E.equipment_id, E.type, E.description " +
-                "ORDER BY times_rented DESC " +
-                "LIMIT 1";
+        String sql = "SELECT E.equipment_id, E.type, E.description, COUNT(R.rental_id) AS times_rented "
+                + "FROM Rental R "
+                + "JOIN Equipment E ON R.equipment_id = E.equipment_id "
+                + "GROUP BY E.equipment_id, E.type, E.description "
+                + "ORDER BY times_rented DESC "
+                + "LIMIT 1";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -69,13 +71,13 @@ public class ReportManager {
 
     // Report 3: Popular Manufacturer
     public void getMostFrequentManufacturer() {
-        String sql = "SELECT A.manufacturer, COUNT(R.rental_id) AS total_rentals " +
-                "FROM Rental R " +
-                "JOIN Equipment E ON R.equipment_id = E.equipment_id " +
-                "JOIN Assets A ON E.asset_id = A.asset_id " +
-                "GROUP BY A.manufacturer " +
-                "ORDER BY total_rentals DESC " +
-                "LIMIT 1";
+        String sql = "SELECT A.manufacturer, COUNT(R.rental_id) AS total_rentals "
+                + "FROM Rental R "
+                + "JOIN Equipment E ON R.equipment_id = E.equipment_id "
+                + "JOIN Assets A ON E.asset_id = A.asset_id "
+                + "GROUP BY A.manufacturer "
+                + "ORDER BY total_rentals DESC "
+                + "LIMIT 1";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -100,11 +102,11 @@ public class ReportManager {
 
     // Report 4: Popular Drone
     public void getMostUsedDrone() {
-        String sql = "SELECT drone_id, COUNT(*) AS delivery_count, SUM(distance_traveled) AS total_distance " +
-                "FROM Delivery_Log " +
-                "GROUP BY drone_id " +
-                "ORDER BY delivery_count DESC, total_distance DESC " +
-                "LIMIT 1";
+        String sql = "SELECT drone_id, COUNT(*) AS delivery_count, SUM(distance_traveled) AS total_distance "
+                + "FROM Delivery_Log "
+                + "GROUP BY drone_id "
+                + "ORDER BY delivery_count DESC, total_distance DESC "
+                + "LIMIT 1";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -131,12 +133,12 @@ public class ReportManager {
 
     // Report 5: Items Checked Out
     public void getMemberWithMostRentals() {
-        String sql = "SELECT R.member_id, C.fname, C.lname, COUNT(*) AS total_items_rented " +
-                "FROM Rental R " +
-                "JOIN Customer C ON R.member_id = C.user_id " +
-                "GROUP BY R.member_id, C.fname, C.lname " +
-                "ORDER BY total_items_rented DESC " +
-                "LIMIT 1";
+        String sql = "SELECT R.member_id, C.fname, C.lname, COUNT(*) AS total_items_rented "
+                + "FROM Rental R "
+                + "JOIN Customer C ON R.member_id = C.user_id "
+                + "GROUP BY R.member_id, C.fname, C.lname "
+                + "ORDER BY total_items_rented DESC "
+                + "LIMIT 1";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -164,10 +166,10 @@ public class ReportManager {
 
     // Report 6: Equipment by Type Released Before Year
     public void getEquipmentByTypeBeforeYear(String type, int year) {
-        String sql = "SELECT E.description, E.type, A.year " +
-                "FROM Equipment E " +
-                "JOIN Assets A ON E.asset_id = A.asset_id " +
-                "WHERE E.type = ? AND A.year < ?";
+        String sql = "SELECT E.description, E.type, A.year "
+                + "FROM Equipment E "
+                + "JOIN Assets A ON E.asset_id = A.asset_id "
+                + "WHERE E.type = ? AND A.year < ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {

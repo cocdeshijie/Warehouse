@@ -4,6 +4,8 @@ import warehouse.WarehouseManager;
 import warehouse.WarehouseUI;
 import equipment.EquipmentManager;
 import equipment.EquipmentUI;
+import report.ReportManager;
+import report.ReportUI;
 
 import java.util.Scanner;
 
@@ -12,17 +14,19 @@ public class Main {
         CustomerManager customerManager = new CustomerManager();
         WarehouseManager warehouseManager = new WarehouseManager();
         EquipmentManager equipmentManager = new EquipmentManager();
+        ReportManager reportManager = new ReportManager();
         Scanner scanner = new Scanner(System.in);
 
         CustomerUI customerUI = new CustomerUI(customerManager, scanner);
         WarehouseUI warehouseUI = new WarehouseUI(warehouseManager, scanner);
         EquipmentUI equipmentUI = new EquipmentUI(equipmentManager, scanner);
+        ReportUI reportUI = new ReportUI(reportManager, scanner);
 
         while (true) {
             System.out.println("===== Warehouse Management System =====");
             System.out.println("1. Customer");
             System.out.println("2. Warehouse");
-            System.out.println("3. Review (TODO)");
+            System.out.println("3. Reports");
             System.out.println("4. Rental (TODO)");
             System.out.println("5. Storage (TODO)");
             System.out.println("6. Equipment");
@@ -32,7 +36,7 @@ public class Main {
             System.out.println("10. Order (TODO)");
             System.out.println("11. Inventory (TODO)");
             System.out.println("12. Exit");
-            System.out.print("Please select an option for its sub menus (1-11): ");
+            System.out.print("Please select an option for its sub menus (1-12): ");
             String input = scanner.nextLine();
             int entityChoice;
             try {
@@ -50,6 +54,8 @@ public class Main {
                     warehouseUI.warehouseMenu();
                     break;
                 case 3:
+                    reportUI.reportMenu();
+                    break;
                 case 4:
                 case 5:
                     System.out.println("Placeholder");

@@ -74,12 +74,26 @@ public class CustomerUI {
         System.out.print("Email: ");
         String email = scanner.nextLine();
         System.out.print("Warehouse Distance: ");
-        double warehouseDistance = Double.parseDouble(scanner.nextLine());
+        double warehouseDistance;
+        try {
+            warehouseDistance = Double.parseDouble(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid warehouse distance.");
+            return;
+        }
+        System.out.print("Warehouse Address: ");
+        String warehouseAddress = scanner.nextLine();
         System.out.print("Is Active (true/false): ");
-        boolean isActive = Boolean.parseBoolean(scanner.nextLine());
+        boolean isActive;
+        try {
+            isActive = Boolean.parseBoolean(scanner.nextLine());
+        } catch (Exception e) {
+            System.out.println("Invalid input for isActive.");
+            return;
+        }
         Date startDate = new Date(); // Current date
 
-        Customer customer = new Customer(userID, firstName, lastName, address, phone, email, warehouseDistance, isActive, startDate);
+        Customer customer = new Customer(userID, firstName, lastName, address, phone, email, warehouseDistance, isActive, startDate, warehouseAddress);
         customerManager.addCustomer(customer);
     }
 

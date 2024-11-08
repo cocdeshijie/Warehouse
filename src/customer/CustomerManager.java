@@ -1,26 +1,50 @@
 package customer;
 
-import java.util.ArrayList;
+import utils.DatabaseConnection;
+import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Scanner;
 import java.util.Date;
 
 public class CustomerManager {
-    private ArrayList<Customer> customers;
 
     public CustomerManager() {
-        customers = new ArrayList<>();
     }
 
     // Add new customer
     public void addCustomer(Customer customer) {
-        customers.add(customer);
-        System.out.println("Customer added successfully!");
+        String sql = "INSERT INTO Customer(user_id, fname, lname, address, phone, email, warehouse_distance, is_active, start_date, warehouse_address) VALUES(?,?,?,?,?,?,?,?,?,?)";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, customer.getUserID());
+            pstmt.setString(2, customer.getFirstName());
+            pstmt.setString(3, customer.getLastName());
+            pstmt.setString(4, customer.getAddress());
+            pstmt.setString(5, customer.getPhone());
+            pstmt.setString(6, customer.getEmail());
+            pstmt.setDouble(7, customer.getWarehouseDistance());
+            pstmt.setBoolean(8, customer.isActive());
+            pstmt.setDate(9, new java.sql.Date(customer.getStartDate().getTime()));
+            pstmt.setString(10, customer.getWarehouseAddress());
+
+            pstmt.executeUpdate();
+            System.out.println("Customer added successfully!");
+
+        } catch (SQLException e) {
+            System.out.println("Error adding customer: " + e.getMessage());
+        }
     }
 
     // Edit existing customer
     public void editCustomer(String userID, Scanner scanner) {
-        Customer existingCustomer = searchCustomer(userID);
-        if (existingCustomer != null) {
+        String sql = "UPDATE Customer SET fname = ?, lname = ?, address = ?, phone = ?, email = ?, warehouse_distance = ?, is_active = ?, warehouse_address = ? WHERE user_id = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
             System.out.println("Enter New Customer Details:");
             System.out.print("First Name: ");
             String newFirstName = scanner.nextLine();
@@ -36,50 +60,119 @@ public class CustomerManager {
             double newWarehouseDistance = Double.parseDouble(scanner.nextLine());
             System.out.print("Is Active (true/false): ");
             boolean newIsActive = Boolean.parseBoolean(scanner.nextLine());
+            System.out.print("Warehouse Address: ");
+            String newWarehouseAddress = scanner.nextLine();
 
-            existingCustomer.setFirstName(newFirstName);
-            existingCustomer.setLastName(newLastName);
-            existingCustomer.setAddress(newAddress);
-            existingCustomer.setPhone(newPhone);
-            existingCustomer.setEmail(newEmail);
-            existingCustomer.setWarehouseDistance(newWarehouseDistance);
-            existingCustomer.setActive(newIsActive);
+            pstmt.setString(1, newFirstName);
+            pstmt.setString(2, newLastName);
+            pstmt.setString(3, newAddress);
+            pstmt.setString(4, newPhone);
+            pstmt.setString(5, newEmail);
+            pstmt.setDouble(6, newWarehouseDistance);
+            pstmt.setBoolean(7, newIsActive);
+            pstmt.setString(8, newWarehouseAddress);
+            pstmt.setString(9, userID);
 
-            System.out.println("Customer with ID " + userID + " has been updated.");
-        } else {
-            System.out.println("Customer with ID " + userID + " not found.");
+            int affectedRows = pstmt.executeUpdate();
+            if (affectedRows > 0) {
+                System.out.println("Customer with ID " + userID + " has been updated.");
+            } else {
+                System.out.println("Customer with ID " + userID + " not found.");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error editing customer: " + e.getMessage());
         }
     }
 
     // Delete customer
     public void deleteCustomer(String userID) {
-        Customer customer = searchCustomer(userID);
-        if (customer != null) {
-            customers.remove(customer);
-            System.out.println("Customer with ID " + userID + " has been deleted.");
-        } else {
-            System.out.println("Customer with ID " + userID + " not found.");
+        String sql = "DELETE FROM Customer WHERE user_id = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, userID);
+            int affectedRows = pstmt.executeUpdate();
+
+            if (affectedRows > 0) {
+                System.out.println("Customer with ID " + userID + " has been deleted.");
+            } else {
+                System.out.println("Customer with ID " + userID + " not found.");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error deleting customer: " + e.getMessage());
         }
     }
 
     // Search customer
     public Customer searchCustomer(String userID) {
-        for (Customer customer : customers) {
-            if (customer.getUserID().equals(userID)) {
+        String sql = "SELECT * FROM Customer WHERE user_id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, userID);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                // Retrieve and parse the date
+                String startDateStr = rs.getString("start_date");
+                Date startDate = null;
+                if (startDateStr != null) {
+                    try {
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                        startDate = sdf.parse(startDateStr);
+                    } catch (ParseException e) {
+                        System.out.println("Error parsing start date: " + e.getMessage());
+                    }
+                }
+
+                // Create Customer object
+                String userId = rs.getString("user_id");
+                String firstName = rs.getString("fname");
+                String lastName = rs.getString("lname");
+                String address = rs.getString("address");
+                String phone = rs.getString("phone");
+                String email = rs.getString("email");
+                double warehouseDistance = rs.getDouble("warehouse_distance");
+                boolean isActive = rs.getBoolean("is_active");
+                String warehouseAddress = rs.getString("warehouse_address");
+
+                Customer customer = new Customer(userId, firstName, lastName, address, phone, email, warehouseDistance, isActive, startDate, warehouseAddress);
                 return customer;
+
+            } else {
+                return null;
             }
+
+        } catch (SQLException e) {
+            System.out.println("Error searching customer: " + e.getMessage());
+            return null;
         }
-        return null;
     }
 
     // List all customers
     public void listAllCustomers() {
-        if (customers.isEmpty()) {
-            System.out.println("No customers available.");
-        } else {
-            for (Customer customer : customers) {
-                System.out.println(customer.toString());
+        String sql = "SELECT * FROM Customer";
+        try (Connection conn = DatabaseConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            boolean hasData = false;
+            while (rs.next()) {
+                hasData = true;
+                String userId = rs.getString("user_id");
+                String firstName = rs.getString("fname");
+                String lastName = rs.getString("lname");
+                System.out.println("Customer ID: " + userId + ", Name: " + firstName + " " + lastName);
             }
+            if (!hasData) {
+                System.out.println("No customers available.");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error listing customers: " + e.getMessage());
         }
     }
 }

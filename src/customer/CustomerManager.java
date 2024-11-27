@@ -15,9 +15,9 @@ public class CustomerManager {
     // Add new customer
     public void addCustomer(Customer customer) {
         String sql = "INSERT INTO Customer("
-                + "user_id, fname, lname, address, phone, email, "
-                + "warehouse_distance, is_active, start_date, warehouse_address"
-                + ") VALUES(?,?,?,?,?,?,?,?,?,?)";
+                + "user_id, first_name, last_name, address, phone, email, "
+                + "warehouse_distance, is_active, start_date"
+                + ") VALUES(?,?,?,?,?,?,?,?,?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -31,7 +31,6 @@ public class CustomerManager {
             pstmt.setDouble(7, customer.getWarehouseDistance());
             pstmt.setBoolean(8, customer.isActive());
             pstmt.setDate(9, new java.sql.Date(customer.getStartDate().getTime()));
-            pstmt.setString(10, customer.getWarehouseAddress());
 
             pstmt.executeUpdate();
             System.out.println("Customer added successfully!");
@@ -44,8 +43,8 @@ public class CustomerManager {
     // Edit existing customer
     public void editCustomer(String userID, Scanner scanner) {
         String sql = "UPDATE Customer SET "
-                + "fname = ?, lname = ?, address = ?, phone = ?, email = ?, "
-                + "warehouse_distance = ?, is_active = ?, warehouse_address = ? "
+                + "first_name = ?, last_name = ?, address = ?, phone = ?, email = ?, "
+                + "warehouse_distance = ?, is_active = ? "
                 + "WHERE user_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -66,8 +65,6 @@ public class CustomerManager {
             double newWarehouseDistance = Double.parseDouble(scanner.nextLine());
             System.out.print("Is Active (true/false): ");
             boolean newIsActive = Boolean.parseBoolean(scanner.nextLine());
-            System.out.print("Warehouse Address: ");
-            String newWarehouseAddress = scanner.nextLine();
 
             pstmt.setString(1, newFirstName);
             pstmt.setString(2, newLastName);
@@ -76,8 +73,7 @@ public class CustomerManager {
             pstmt.setString(5, newEmail);
             pstmt.setDouble(6, newWarehouseDistance);
             pstmt.setBoolean(7, newIsActive);
-            pstmt.setString(8, newWarehouseAddress);
-            pstmt.setString(9, userID);
+            pstmt.setString(8, userID);
 
             int affectedRows = pstmt.executeUpdate();
             if (affectedRows > 0) {
@@ -144,10 +140,9 @@ public class CustomerManager {
                 String email = rs.getString("email");
                 double warehouseDistance = rs.getDouble("warehouse_distance");
                 boolean isActive = rs.getBoolean("is_active");
-                String warehouseAddress = rs.getString("warehouse_address");
 
                 Customer customer = new Customer(userId, firstName, lastName, address, phone, email,
-                        warehouseDistance, isActive, startDate, warehouseAddress);
+                        warehouseDistance, isActive, startDate);
                 return customer;
 
             } else {

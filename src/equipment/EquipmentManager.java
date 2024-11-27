@@ -1,113 +1,133 @@
 package equipment;
 
+import utils.DatabaseConnection;
+import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 public class EquipmentManager {
-    private ArrayList<Equipment> equipments;
-    private Map<String, String> equipmentRentals; // Map EquipmentID to UserID
 
-    public EquipmentManager() {
-        equipments = new ArrayList<>();
-        equipmentRentals = new HashMap<>();
-    }
-
-    // Add new equipment
     public void addEquipment(Equipment equipment) {
-        equipments.add(equipment);
-        System.out.println("Equipment added successfully!");
-    }
+        String sql = "INSERT INTO Equipment (equipment_id, inventory_id, type, description, dimensions, weight, asset_id) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-    // Edit existing equipment
-    public void editEquipment(String equipmentID, Equipment updatedEquipment) {
-        for (int i = 0; i < equipments.size(); i++) {
-            if (equipments.get(i).getEquipmentID().equals(equipmentID)) {
-                equipments.set(i, updatedEquipment);
-                System.out.println("Equipment with ID " + equipmentID + " has been updated.");
-                return;
-            }
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, equipment.getEquipmentID());
+            pstmt.setString(2, equipment.getInventoryID());
+            pstmt.setString(3, equipment.getType());
+            pstmt.setString(4, equipment.getDescription());
+            pstmt.setString(5, equipment.getDimensions());
+            pstmt.setDouble(6, equipment.getWeight());
+            pstmt.setString(7, equipment.getAssetID());
+
+            pstmt.executeUpdate();
+            System.out.println("Equipment added successfully!");
+
+        } catch (SQLException e) {
+            System.out.println("Error adding equipment: " + e.getMessage());
         }
-        System.out.println("Equipment with ID " + equipmentID + " not found.");
     }
 
-    // Delete equipment
+    public void editEquipment(String equipmentID, Equipment equipment) {
+        String sql = "UPDATE Equipment SET inventory_id = ?, type = ?, description = ?, "
+                + "dimensions = ?, weight = ?, asset_id = ? WHERE equipment_id = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, equipment.getInventoryID());
+            pstmt.setString(2, equipment.getType());
+            pstmt.setString(3, equipment.getDescription());
+            pstmt.setString(4, equipment.getDimensions());
+            pstmt.setDouble(5, equipment.getWeight());
+            pstmt.setString(6, equipment.getAssetID());
+            pstmt.setString(7, equipmentID);
+
+            int result = pstmt.executeUpdate();
+            if (result > 0) {
+                System.out.println("Equipment updated successfully!");
+            } else {
+                System.out.println("Equipment not found.");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error updating equipment: " + e.getMessage());
+        }
+    }
+
     public void deleteEquipment(String equipmentID) {
-        for (int i = 0; i < equipments.size(); i++) {
-            if (equipments.get(i).getEquipmentID().equals(equipmentID)) {
-                equipments.remove(i);
-                System.out.println("Equipment with ID " + equipmentID + " has been deleted.");
-                return;
+        String sql = "DELETE FROM Equipment WHERE equipment_id = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, equipmentID);
+            int result = pstmt.executeUpdate();
+
+            if (result > 0) {
+                System.out.println("Equipment deleted successfully!");
+            } else {
+                System.out.println("Equipment not found.");
             }
+
+        } catch (SQLException e) {
+            System.out.println("Error deleting equipment: " + e.getMessage());
         }
-        System.out.println("Equipment with ID " + equipmentID + " not found.");
     }
 
-    // Search equipment
     public Equipment searchEquipment(String equipmentID) {
-        for (Equipment equipment : equipments) {
-            if (equipment.getEquipmentID().equals(equipmentID)) {
-                return equipment;
+        String sql = "SELECT * FROM Equipment WHERE equipment_id = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, equipmentID);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return new Equipment(
+                    rs.getString("equipment_id"),
+                    rs.getString("inventory_id"),
+                    rs.getString("type"),
+                    rs.getString("description"),
+                    rs.getString("dimensions"),
+                    rs.getDouble("weight"),
+                    rs.getString("asset_id")
+                );
             }
+
+        } catch (SQLException e) {
+            System.out.println("Error searching equipment: " + e.getMessage());
         }
         return null;
     }
 
-    // List all equipment
-    public void listAllEquipments() {
-        if (equipments.isEmpty()) {
-            System.out.println("No equipment available.");
-        } else {
-            for (Equipment equipment : equipments) {
-                System.out.println(equipment.toString());
+    public List<Equipment> listAllEquipment() {
+        List<Equipment> equipmentList = new ArrayList<>();
+        String sql = "SELECT * FROM Equipment";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                Equipment equipment = new Equipment(
+                    rs.getString("equipment_id"),
+                    rs.getString("inventory_id"),
+                    rs.getString("type"),
+                    rs.getString("description"),
+                    rs.getString("dimensions"),
+                    rs.getDouble("weight"),
+                    rs.getString("asset_id")
+                );
+                equipmentList.add(equipment);
             }
+
+        } catch (SQLException e) {
+            System.out.println("Error listing equipment: " + e.getMessage());
         }
-    }
-
-    // Rent equipment
-    public void rentEquipment(String equipmentID, String userID) {
-        Equipment equipment = searchEquipment(equipmentID);
-        if (equipment != null) {
-            if (!equipmentRentals.containsKey(equipmentID)) {
-                equipmentRentals.put(equipmentID, userID);
-                System.out.println("Equipment with ID " + equipmentID + " has been rented to User ID " + userID);
-            } else {
-                System.out.println("Equipment with ID " + equipmentID + " is already rented.");
-            }
-        } else {
-            System.out.println("Equipment with ID " + equipmentID + " not found.");
-        }
-    }
-
-    // Return equipment
-    public void returnEquipment(String equipmentID) {
-        if (equipmentRentals.containsKey(equipmentID)) {
-            equipmentRentals.remove(equipmentID);
-            System.out.println("Equipment with ID " + equipmentID + " has been returned.");
-        } else {
-            System.out.println("Equipment with ID " + equipmentID + " is not currently rented.");
-        }
-    }
-
-    // Check if equipment is rented
-    public boolean isEquipmentRented(String equipmentID) {
-        return equipmentRentals.containsKey(equipmentID);
-    }
-
-    // Get renter of equipment
-    public String getEquipmentRenter(String equipmentID) {
-        return equipmentRentals.get(equipmentID);
-    }
-
-    // Delivery of equipment (Placeholder)
-    public void scheduleDelivery(String equipmentID, String userID, String droneID) {
-        // Since drone functionality is not implemented, we'll just print a message
-        System.out.println("Scheduled delivery of equipment ID " + equipmentID + " using Drone ID " + droneID + " to user ID " + userID);
-    }
-
-    // Pickup of equipment (Placeholder)
-    public void schedulePickup(String equipmentID, String userID, String droneID) {
-        // Since drone functionality is not implemented, we'll just print a message
-        System.out.println("Scheduled pickup of equipment ID " + equipmentID + " using Drone ID " + droneID + " from user ID " + userID);
+        return equipmentList;
     }
 }

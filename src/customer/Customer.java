@@ -12,10 +12,9 @@ public class Customer {
     private double warehouseDistance;
     private boolean isActive;
     private Date startDate;
-    private String warehouseAddress;
 
     public Customer(String userID, String firstName, String lastName, String address, String phone, String email,
-                    double warehouseDistance, boolean isActive, Date startDate, String warehouseAddress) {
+                   double warehouseDistance, boolean isActive, Date startDate) {
         this.userID = userID;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -25,13 +24,9 @@ public class Customer {
         this.warehouseDistance = warehouseDistance;
         this.isActive = isActive;
         this.startDate = startDate;
-        this.warehouseAddress = warehouseAddress;
     }
 
     // Getters and Setters
-    public String getWarehouseAddress() { return warehouseAddress; }
-    public void setWarehouseAddress(String warehouseAddress) { this.warehouseAddress = warehouseAddress; }
-
     public String getUserID() { return userID; }
     public void setUserID(String userID) { this.userID = userID; }
 

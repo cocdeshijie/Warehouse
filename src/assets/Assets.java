@@ -1,8 +1,9 @@
-package storage;
+package assets;
 
 import java.util.Date;
 
-public class Storage {
+public class Assets {
+    private String assetID;
     private String status;
     private String location;
     private boolean active;
@@ -11,8 +12,12 @@ public class Storage {
     private String serialNo;
     private String manufacturer;
     private Date warrantyExp;
+    private String warehouseID;
 
-    public Storage(String status, String location, boolean active, int year, String model, String serialNo, String manufacturer, Date warrantyExp) {
+    public Assets(String assetID, String status, String location, boolean active,
+                int year, String model, String serialNo, String manufacturer,
+                Date warrantyExp, String warehouseID) {
+        this.assetID = assetID;
         this.status = status;
         this.location = location;
         this.active = active;
@@ -21,9 +26,13 @@ public class Storage {
         this.serialNo = serialNo;
         this.manufacturer = manufacturer;
         this.warrantyExp = warrantyExp;
+        this.warehouseID = warehouseID;
     }
 
     // Getters and Setters
+    public String getAssetID() { return assetID; }
+    public void setAssetID(String assetID) { this.assetID = assetID; }
+
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
@@ -47,4 +56,7 @@ public class Storage {
 
     public Date getWarrantyExp() { return warrantyExp; }
     public void setWarrantyExp(Date warrantyExp) { this.warrantyExp = warrantyExp; }
+
+    public String getWarehouseID() { return warehouseID; }
+    public void setWarehouseID(String warehouseID) { this.warehouseID = warehouseID; }
 }

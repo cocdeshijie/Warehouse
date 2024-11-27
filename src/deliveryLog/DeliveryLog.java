@@ -4,32 +4,27 @@ import java.util.Date;
 
 public class DeliveryLog {
     private String deliveryLogID;
-    private String droneID;
-    private String orderID;
     private Date deliveryDate;
     private String deliveryStatus;
     private double distanceTraveled;
-    private double deliveryTime;
+    private String deliveryTime;
+    private String droneID;
+    private String equipmentID;
 
-    public DeliveryLog(String deliveryLogID, String droneID, String orderID, Date deliveryDate, String deliveryStatus, double distanceTraveled, double deliveryTime) {
+    public DeliveryLog(String deliveryLogID, Date deliveryDate, String deliveryStatus,
+                      double distanceTraveled, String deliveryTime, String droneID, String equipmentID) {
         this.deliveryLogID = deliveryLogID;
-        this.droneID = droneID;
-        this.orderID = orderID;
         this.deliveryDate = deliveryDate;
         this.deliveryStatus = deliveryStatus;
         this.distanceTraveled = distanceTraveled;
         this.deliveryTime = deliveryTime;
+        this.droneID = droneID;
+        this.equipmentID = equipmentID;
     }
 
     // Getters and Setters
     public String getDeliveryLogID() { return deliveryLogID; }
     public void setDeliveryLogID(String deliveryLogID) { this.deliveryLogID = deliveryLogID; }
-
-    public String getDroneID() { return droneID; }
-    public void setDroneID(String droneID) { this.droneID = droneID; }
-
-    public String getOrderID() { return orderID; }
-    public void setOrderID(String orderID) { this.orderID = orderID; }
 
     public Date getDeliveryDate() { return deliveryDate; }
     public void setDeliveryDate(Date deliveryDate) { this.deliveryDate = deliveryDate; }
@@ -40,6 +35,12 @@ public class DeliveryLog {
     public double getDistanceTraveled() { return distanceTraveled; }
     public void setDistanceTraveled(double distanceTraveled) { this.distanceTraveled = distanceTraveled; }
 
-    public double getDeliveryTime() { return deliveryTime; }
-    public void setDeliveryTime(double deliveryTime) { this.deliveryTime = deliveryTime; }
+    public String getDeliveryTime() { return deliveryTime; }
+    public void setDeliveryTime(String deliveryTime) { this.deliveryTime = deliveryTime; }
+
+    public String getDroneID() { return droneID; }
+    public void setDroneID(String droneID) { this.droneID = droneID; }
+
+    public String getEquipmentID() { return equipmentID; }
+    public void setEquipmentID(String equipmentID) { this.equipmentID = equipmentID; }
 }

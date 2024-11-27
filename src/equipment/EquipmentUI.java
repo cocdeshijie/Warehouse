@@ -20,55 +20,25 @@ public class EquipmentUI {
             System.out.println("3. Delete Equipment");
             System.out.println("4. Search Equipment");
             System.out.println("5. List All Equipment");
-            System.out.println("6. Rent Equipment");
-            System.out.println("7. Return Equipment");
-            System.out.println("8. Schedule Delivery");
-            System.out.println("9. Schedule Pickup");
-            System.out.println("10. Back to Main Menu");
+            System.out.println("6. Back to Main Menu");
             System.out.print("Please choose an option: ");
-            String input = scanner.nextLine();
+
             int choice;
             try {
-                choice = Integer.parseInt(input);
+                choice = Integer.parseInt(scanner.nextLine());
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input.");
                 continue;
             }
 
             switch (choice) {
-                case 1:
-                    addNewEquipment();
-                    break;
-                case 2:
-                    editEquipment();
-                    break;
-                case 3:
-                    deleteEquipment();
-                    break;
-                case 4:
-                    searchEquipment();
-                    break;
-                case 5:
-                    listAllEquipments();
-                    break;
-                case 6:
-                    rentEquipment();
-                    break;
-                case 7:
-                    returnEquipment();
-                    break;
-                case 8:
-                    scheduleDelivery();
-                    break;
-                case 9:
-                    schedulePickup();
-                    break;
-                case 10:
-                    exit = true;
-                    break;
-                default:
-                    System.out.println("Invalid option.");
-                    break;
+                case 1: addNewEquipment(); break;
+                case 2: editEquipment(); break;
+                case 3: deleteEquipment(); break;
+                case 4: searchEquipment(); break;
+                case 5: listAllEquipment(); break;
+                case 6: exit = true; break;
+                default: System.out.println("Invalid option.");
             }
             System.out.println();
         }
@@ -78,6 +48,8 @@ public class EquipmentUI {
         System.out.println("Enter Equipment Details:");
         System.out.print("Equipment ID: ");
         String equipmentID = scanner.nextLine();
+        System.out.print("Inventory ID: ");
+        String inventoryID = scanner.nextLine();
         System.out.print("Type: ");
         String type = scanner.nextLine();
         System.out.print("Description: ");
@@ -92,17 +64,22 @@ public class EquipmentUI {
             System.out.println("Invalid weight.");
             return;
         }
+        System.out.print("Asset ID: ");
+        String assetID = scanner.nextLine();
 
-        Equipment equipment = new Equipment(equipmentID, type, description, dimensions, weight);
+        Equipment equipment = new Equipment(equipmentID, inventoryID, type, description, dimensions, weight, assetID);
         equipmentManager.addEquipment(equipment);
     }
 
     private void editEquipment() {
         System.out.print("Enter Equipment ID to edit: ");
         String equipmentID = scanner.nextLine();
+
         Equipment existingEquipment = equipmentManager.searchEquipment(equipmentID);
         if (existingEquipment != null) {
             System.out.println("Enter New Equipment Details:");
+            System.out.print("Inventory ID: ");
+            String newInventoryID = scanner.nextLine();
             System.out.print("Type: ");
             String newType = scanner.nextLine();
             System.out.print("Description: ");
@@ -117,8 +94,11 @@ public class EquipmentUI {
                 System.out.println("Invalid weight.");
                 return;
             }
+            System.out.print("Asset ID: ");
+            String newAssetID = scanner.nextLine();
 
-            Equipment updatedEquipment = new Equipment(equipmentID, newType, newDescription, newDimensions, newWeight);
+            Equipment updatedEquipment = new Equipment(equipmentID, newInventoryID, newType, newDescription,
+                                                     newDimensions, newWeight, newAssetID);
             equipmentManager.editEquipment(equipmentID, updatedEquipment);
         } else {
             System.out.println("Equipment not found.");
@@ -136,57 +116,13 @@ public class EquipmentUI {
         String equipmentID = scanner.nextLine();
         Equipment equipment = equipmentManager.searchEquipment(equipmentID);
         if (equipment != null) {
-            System.out.println("Equipment found: " + equipment.toString());
+            System.out.println(equipment.toString());
         } else {
             System.out.println("Equipment not found.");
         }
     }
 
-    private void listAllEquipments() {
-        equipmentManager.listAllEquipments();
-    }
-
-    private void rentEquipment() {
-        System.out.println("===== Rent Equipment =====");
-        System.out.print("Enter Equipment ID to rent: ");
-        String equipmentID = scanner.nextLine();
-        System.out.print("Enter User ID: ");
-        String userID = scanner.nextLine();
-        // print a confirmation message
-        System.out.println("Equipment with ID " + equipmentID + " has been rented to User ID " + userID + ".");
-    }
-
-    private void returnEquipment() {
-        System.out.println("===== Return Equipment =====");
-        System.out.print("Enter Equipment ID to return: ");
-        String equipmentID = scanner.nextLine();
-        System.out.print("Enter User ID: ");
-        String userID = scanner.nextLine();
-        // print a confirmation message
-        System.out.println("Equipment with ID " + equipmentID + " has been returned by User ID " + userID + ".");
-    }
-
-    private void scheduleDelivery() {
-        System.out.println("===== Schedule Delivery =====");
-        System.out.print("Enter Equipment ID to deliver: ");
-        String equipmentID = scanner.nextLine();
-        System.out.print("Enter User ID: ");
-        String userID = scanner.nextLine();
-        System.out.print("Enter Drone ID to use for delivery: ");
-        String droneID = scanner.nextLine();
-        // print a confirmation message
-        System.out.println("Delivery scheduled for Equipment ID " + equipmentID + " to User ID " + userID + " using Drone ID " + droneID + ".");
-    }
-
-    private void schedulePickup() {
-        System.out.println("===== Schedule Pickup =====");
-        System.out.print("Enter Equipment ID to pick up: ");
-        String equipmentID = scanner.nextLine();
-        System.out.print("Enter User ID: ");
-        String userID = scanner.nextLine();
-        System.out.print("Enter Drone ID to use for pickup: ");
-        String droneID = scanner.nextLine();
-        // print a confirmation message
-        System.out.println("Pickup scheduled for Equipment ID " + equipmentID + " from User ID " + userID + " using Drone ID " + droneID + ".");
+    private void listAllEquipment() {
+        equipmentManager.listAllEquipment().forEach(System.out::println);
     }
 }

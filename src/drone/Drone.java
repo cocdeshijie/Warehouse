@@ -2,26 +2,32 @@ package drone;
 
 public class Drone {
     private String droneID;
+    private String fleetID;
     private String name;
     private double maxSpeed;
     private double weightCapacity;
     private double distanceAutonomy;
-    private String fleetID;
-    private double timeAutonomy;
+    private int timeAutonomy;
+    private String assetID;
 
-    public Drone(String droneID, String name, double maxSpeed, double weightCapacity, double distanceAutonomy, String fleetID, double timeAutonomy) {
+    public Drone(String droneID, String fleetID, String name, double maxSpeed,
+                double weightCapacity, double distanceAutonomy, int timeAutonomy, String assetID) {
         this.droneID = droneID;
+        this.fleetID = fleetID;
         this.name = name;
         this.maxSpeed = maxSpeed;
         this.weightCapacity = weightCapacity;
         this.distanceAutonomy = distanceAutonomy;
-        this.fleetID = fleetID;
         this.timeAutonomy = timeAutonomy;
+        this.assetID = assetID;
     }
 
     // Getters and Setters
     public String getDroneID() { return droneID; }
     public void setDroneID(String droneID) { this.droneID = droneID; }
+
+    public String getFleetID() { return fleetID; }
+    public void setFleetID(String fleetID) { this.fleetID = fleetID; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
@@ -35,9 +41,9 @@ public class Drone {
     public double getDistanceAutonomy() { return distanceAutonomy; }
     public void setDistanceAutonomy(double distanceAutonomy) { this.distanceAutonomy = distanceAutonomy; }
 
-    public String getFleetID() { return fleetID; }
-    public void setFleetID(String fleetID) { this.fleetID = fleetID; }
+    public int getTimeAutonomy() { return timeAutonomy; }
+    public void setTimeAutonomy(int timeAutonomy) { this.timeAutonomy = timeAutonomy; }
 
-    public double getTimeAutonomy() { return timeAutonomy; }
-    public void setTimeAutonomy(double timeAutonomy) { this.timeAutonomy = timeAutonomy; }
+    public String getAssetID() { return assetID; }
+    public void setAssetID(String assetID) { this.assetID = assetID; }
 }

@@ -4,8 +4,8 @@ import java.util.Scanner;
 import java.util.Date;
 
 public class CustomerUI {
-    private CustomerManager customerManager;
-    private Scanner scanner;
+    private final CustomerManager customerManager;
+    private final Scanner scanner;
 
     public CustomerUI(CustomerManager customerManager, Scanner scanner) {
         this.customerManager = customerManager;
@@ -23,37 +23,23 @@ public class CustomerUI {
             System.out.println("5. List All Customers");
             System.out.println("6. Back to Main Menu");
             System.out.print("Please choose an option: ");
-            String input = scanner.nextLine();
+
             int choice;
             try {
-                choice = Integer.parseInt(input);
+                choice = Integer.parseInt(scanner.nextLine());
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input.");
                 continue;
             }
 
             switch (choice) {
-                case 1:
-                    addNewCustomer();
-                    break;
-                case 2:
-                    editCustomer();
-                    break;
-                case 3:
-                    deleteCustomer();
-                    break;
-                case 4:
-                    searchCustomer();
-                    break;
-                case 5:
-                    listAllCustomers();
-                    break;
-                case 6:
-                    exit = true;
-                    break;
-                default:
-                    System.out.println("Invalid option.");
-                    break;
+                case 1: addNewCustomer(); break;
+                case 2: editCustomer(); break;
+                case 3: deleteCustomer(); break;
+                case 4: searchCustomer(); break;
+                case 5: listAllCustomers(); break;
+                case 6: exit = true; break;
+                default: System.out.println("Invalid option.");
             }
             System.out.println();
         }
@@ -81,8 +67,6 @@ public class CustomerUI {
             System.out.println("Invalid warehouse distance.");
             return;
         }
-        System.out.print("Warehouse Address: ");
-        String warehouseAddress = scanner.nextLine();
         System.out.print("Is Active (true/false): ");
         boolean isActive;
         try {
@@ -91,9 +75,10 @@ public class CustomerUI {
             System.out.println("Invalid input for isActive.");
             return;
         }
-        Date startDate = new Date(); // Current date
+        Date startDate = new Date();
 
-        Customer customer = new Customer(userID, firstName, lastName, address, phone, email, warehouseDistance, isActive, startDate, warehouseAddress);
+        Customer customer = new Customer(userID, firstName, lastName, address, phone, email,
+                                      warehouseDistance, isActive, startDate);
         customerManager.addCustomer(customer);
     }
 
@@ -114,7 +99,7 @@ public class CustomerUI {
         String userID = scanner.nextLine();
         Customer customer = customerManager.searchCustomer(userID);
         if (customer != null) {
-            System.out.println("Customer found: " + customer.toString());
+            System.out.println(customer.toString());
         } else {
             System.out.println("Customer not found.");
         }

@@ -3,8 +3,8 @@ package warehouse;
 import java.util.Scanner;
 
 public class WarehouseUI {
-    private WarehouseManager warehouseManager;
-    private Scanner scanner;
+    private final WarehouseManager warehouseManager;
+    private final Scanner scanner;
 
     public WarehouseUI(WarehouseManager warehouseManager, Scanner scanner) {
         this.warehouseManager = warehouseManager;
@@ -22,37 +22,23 @@ public class WarehouseUI {
             System.out.println("5. List All Warehouses");
             System.out.println("6. Back to Main Menu");
             System.out.print("Please choose an option: ");
-            String input = scanner.nextLine();
+
             int choice;
             try {
-                choice = Integer.parseInt(input);
+                choice = Integer.parseInt(scanner.nextLine());
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input.");
                 continue;
             }
 
             switch (choice) {
-                case 1:
-                    addNewWarehouse();
-                    break;
-                case 2:
-                    editWarehouse();
-                    break;
-                case 3:
-                    deleteWarehouse();
-                    break;
-                case 4:
-                    searchWarehouse();
-                    break;
-                case 5:
-                    listAllWarehouses();
-                    break;
-                case 6:
-                    exit = true;
-                    break;
-                default:
-                    System.out.println("Invalid option.");
-                    break;
+                case 1: addNewWarehouse(); break;
+                case 2: editWarehouse(); break;
+                case 3: deleteWarehouse(); break;
+                case 4: searchWarehouse(); break;
+                case 5: listAllWarehouses(); break;
+                case 6: exit = true; break;
+                default: System.out.println("Invalid option.");
             }
             System.out.println();
         }
@@ -62,8 +48,10 @@ public class WarehouseUI {
         System.out.println("Enter Warehouse Details:");
         System.out.print("Warehouse ID: ");
         String warehouseID = scanner.nextLine();
+        System.out.print("Name: ");
+        String name = scanner.nextLine();
         System.out.print("Storage Capacity: ");
-        String storageCapacity = scanner.nextLine();
+        int storageCapacity = Integer.parseInt(scanner.nextLine());
         System.out.print("City: ");
         String city = scanner.nextLine();
         System.out.print("Address: ");
@@ -74,8 +62,14 @@ public class WarehouseUI {
         String managerName = scanner.nextLine();
         System.out.print("Drone Capacity: ");
         int droneCapacity = Integer.parseInt(scanner.nextLine());
+        System.out.print("Available Drones: ");
+        int availableDrones = Integer.parseInt(scanner.nextLine());
+        System.out.print("Available Equipment: ");
+        int availableEquipment = Integer.parseInt(scanner.nextLine());
 
-        Warehouse warehouse = new Warehouse(warehouseID, storageCapacity, city, address, phone, managerName, droneCapacity);
+        Warehouse warehouse = new Warehouse(warehouseID, name, storageCapacity, city,
+                                         address, phone, managerName, droneCapacity,
+                                         availableDrones, availableEquipment);
         warehouseManager.addWarehouse(warehouse);
     }
 
@@ -96,7 +90,7 @@ public class WarehouseUI {
         String warehouseID = scanner.nextLine();
         Warehouse warehouse = warehouseManager.searchWarehouse(warehouseID);
         if (warehouse != null) {
-            System.out.println("Warehouse found: " + warehouse.toString());
+            System.out.println(warehouse.toString());
         } else {
             System.out.println("Warehouse not found.");
         }
